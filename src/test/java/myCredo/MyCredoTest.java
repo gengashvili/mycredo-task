@@ -1,7 +1,8 @@
 package myCredo;
 
-import data.LoginData;
 import data.Routes;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import steps.AuthPageSteps;
@@ -13,24 +14,33 @@ public class MyCredoTest extends BaseTest {
     LanguageSwitcherPopUpSteps languageSwitcherPopUpSteps;
 
     @BeforeMethod
-    public void beforeMethod() {
+    public void setUp() {
         authPageSteps = new AuthPageSteps(driver, wait, softAssert);
         languageSwitcherPopUpSteps = new LanguageSwitcherPopUpSteps(driver, wait, softAssert);
 
         driver.get(Routes.AUTH_URL);
     }
 
-    @Test
-    public void testSteps() {
-        authPageSteps.clickOnLanguageSwitcherButton();
-        languageSwitcherPopUpSteps.switchLanguage(LoginData.LANGUAGE_GE);
+    @Test(priority = 1)
+    public void loginWithEmptyPassword() {
+        String userName = RandomStringUtils.randomAlphabetic(10); // შემთხვევითი ასოები
 
         authPageSteps
-                .verifyLanguageSwitchedCorrectly(LoginData.LOGIN_FORM_HEADER_GE)
-                .fillUserName("username")
-                .fillPassword("password")
-                .clickOnSubmitButton()
-                .verifyIncorrectDataError(LoginData.INCORRECT_DATA_ERROR_MESSAGE_GE);
+                .fillUserName(userName)
+                .fillPassword("")
+                .verifySubmitButtonIsDisabled();
+
+        softAssert.assertAll();
+    }
+
+    @Test(priority = 2)
+    public void loginWithEmptyUserName() {
+        String password = RandomStringUtils.randomAlphabetic(10); // შემთხვევით ასოები + ციფრები
+
+        authPageSteps
+                .fillUserName("")
+                .fillPassword(password)
+                .verifySubmitButtonIsDisabled();
 
         softAssert.assertAll();
     }
