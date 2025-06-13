@@ -1,5 +1,6 @@
 package myCredo;
 
+import data.LoginDataProvider;
 import data.Routes;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -65,6 +66,25 @@ public class MyCredoTest extends BaseTest {
         authPageSteps
                 .fillUserName(specialCharacters)
                 .verifyUserNameInputIsEmpty();
+
+        softAssert.assertAll();
+    }
+
+    @Test(
+            priority = 5,
+            dataProvider = "invalidCredentialsDataProvider",
+            dataProviderClass = LoginDataProvider.class
+    )
+    public void loginWithInvalidCredentialsAndCheckErrorMessage(String language, String expectedLoginFormHeader, String username, String password, String expectedErrorMessage) {
+        authPageSteps.clickOnLanguageSwitcherButton();
+        languageSwitcherPopUpSteps.switchLanguage(language);
+
+        authPageSteps
+                .verifyLanguageSwitchedCorrectly(expectedLoginFormHeader)
+                .fillUserName(username)
+                .fillPassword(password)
+                .clickOnSubmitButton()
+                .verifyIncorrectDataError(expectedErrorMessage);
 
         softAssert.assertAll();
     }
