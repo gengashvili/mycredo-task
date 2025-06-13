@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import steps.AuthPageSteps;
 import steps.componentsSteps.LanguageSwitcherPopUpSteps;
+import utils.CustomRandomStringUtils;
 import utils.config.BaseTest;
 
 public class MyCredoTest extends BaseTest {
@@ -41,6 +42,29 @@ public class MyCredoTest extends BaseTest {
                 .fillUserName("")
                 .fillPassword(password)
                 .verifySubmitButtonIsDisabled();
+
+        softAssert.assertAll();
+    }
+
+    @Test(priority = 3)
+    public void loginWithGeorgianLettersInUsername() {
+        String georgianUserName = CustomRandomStringUtils.randomGeorgianAlphabetic(10); // შემთხვევით ქართული ასოები
+
+        authPageSteps
+                .fillUserName(georgianUserName)
+                .verifyUserNameInputIsEmpty();
+
+        softAssert.assertAll();
+    }
+
+    @Test(priority = 4)
+    public void loginWithSpecialCharactersInUsername() {
+        //შემთხვევითი სპეციალური სიმბოლოები, რომელთა ჩაწერაც არის არის ნებადართული მომხმარებლის სახელში
+        String specialCharacters = CustomRandomStringUtils.randomSpecialCharacters(10);
+
+        authPageSteps
+                .fillUserName(specialCharacters)
+                .verifyUserNameInputIsEmpty();
 
         softAssert.assertAll();
     }
